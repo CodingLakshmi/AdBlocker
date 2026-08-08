@@ -1,77 +1,73 @@
-// YouTube Ad Blocker - Grid-Aware Version
+// Universal Ad Blocker - Works on any website
 
 function removeAds() {
     let removedCount = 0;
 
-    // Primary: Remove ytd-ad-slot-renderer and its parent container
-    document.querySelectorAll('ytd-ad-slot-renderer').forEach(ad => {
-        let container = ad.closest('ytd-rich-item-renderer');
+    // YouTube-specific ads
+    document.querySelectorAll('ytd-ad-slot-renderer, ytd-promoted-sparkles-web-renderer').forEach(ad => {
+        let container = ad.closest('ytd-rich-item-renderer') || ad.parentElement;
         if (container) {
             container.remove();
             removedCount++;
         }
     });
 
-    // Secondary: Look for "Sponsored" badge and remove parent
-    document.querySelectorAll('[class*="Badge"]').forEach(badge => {
-        const text = badge.textContent.trim();
-        if (text === 'Sponsored' || text === 'Ad') {
-            let container = badge.closest('ytd-rich-item-renderer');
-            if (container) {
+    // Generic ad detection by common classes/ids
+    const adSelectors = [
+        '[class*="ad-container"]',
+        '[class*="advertisement"]',
+        '[class*="ad-block"]',
+        '[class*="promoted"]',
+        '[class*="sponsor"]',
+        '[id*="ad-"]',
+        '[id*="advertisement"]',
+        '[data-ad-slot]',
+        '[data-ad-format]',
+        'ins.adsbygoogle',
+        '[class*="doubleclick"]'
+    ];
+
+    adSelectors.forEach(selector => {
+        try {
+            document.querySelectorAll(selector).forEach(ad => {
+                if (ad && ad.offsetParent !== null) { // Check if visible
+                    ad.remove();
+                    removedCount++;
+                }
+            });
+        } catch (e) {
+            // Invalid selector, skip
+        }
+    });
+
+    // Generic text-based detection
+    document.querySelectorAll('[class*="Badge"], [class*="Label"]').forEach(element => {
+        const text = element.textContent.trim().toLowerCase();
+        if (text.includes('sponsored') || text.includes('promoted') || text === 'ad') {
+            let container = element.closest('[role="listitem"], article, .card, [class*="item"]') || element.parentElement;
+            if (container && container !== document.body) {
                 container.remove();
                 removedCount++;
             }
         }
     });
 
-    // Tertiary: Remove by ad metadata classes
-    document.querySelectorAll('[class*="FeedAdMetadata"], [class*="ytAdDetails"]').forEach(ad => {
-        let container = ad.closest('ytd-rich-item-renderer');
-        if (container) {
-            container.remove();
-            removedCount++;
-        }
-    });
-
-    // Force grid reflow to collapse gaps
-    const grid = document.querySelector('ytd-rich-grid-renderer');
-    if (grid && removedCount > 0) {
-        // Trigger reflow
-        grid.style.display = 'none';
-        setTimeout(() => {
-            grid.style.display = 'grid';
-        }, 10);
-    }
-
     if (removedCount > 0) {
-        console.log(`Removed ${removedCount} ad(s)`);
+        console.log(`[Universal Adblocker] Removed ${removedCount} ad(s)`);
     }
 }
 
 // Run on initial load
 removeAds();
 
-// Use MutationObserver to catch new ads
-const observer = new MutationObserver((mutations) => {
-    let shouldCheck = false;
-
-    for (let mutation of mutations) {
-        // Only check if new nodes were added
-        if (mutation.addedNodes.length > 0) {
-            shouldCheck = true;
-            break;
-        }
-    }
-
-    if (shouldCheck) {
-        removeAds();
-    }
+// Watch for dynamically loaded ads
+const observer = new MutationObserver(() => {
+    removeAds();
 });
 
-// Start observing
 observer.observe(document.documentElement, {
     childList: true,
     subtree: true
 });
 
-console.log('YouTube Adblocker active - removing ads and collapsing grid');
+console.log('[Universal Adblocker] Active on:', window.location.hostname);

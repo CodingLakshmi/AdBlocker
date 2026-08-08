@@ -1,12 +1,34 @@
-/* Hide YouTube ads - CSS backup */
-ytd-ad-slot-renderer {
-    display: none !important;
-}
+/* Universal Ad Blocker - CSS Rules */
 
+/* YouTube ads */
+ytd-ad-slot-renderer,
 ytd-promoted-sparkles-web-renderer {
     display: none !important;
 }
 
-[data-ad-promo-id] {
+/* Generic ad containers */
+[class*="ad-container"],
+[class*="advertisement"],
+[class*="ad-block"],
+[class*="promoted"],
+[class*="sponsor"],
+[id*="ad-"],
+[id*="advertisement"],
+[data-ad-slot],
+[data-ad-format],
+[data-ad-promo-id],
+ins.adsbygoogle {
+    display: none !important;
+}
+
+/* Google AdSense */
+.google-auto-placed {
+    display: none !important;
+}
+
+/* Common ad attributes */
+[class*="doubleclick"],
+[class*="adsense"],
+[class*="advert"] {
     display: none !important;
 }

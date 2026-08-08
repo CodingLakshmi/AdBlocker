@@ -1,25 +1,24 @@
 {
     "manifest_version": 3,
-    "name": "Youtube Adblocker",
+    "name": "Universal Adblocker",
     "version": "1.0",
-    "description": "Remove ads from Youtube",
+    "description": "Remove ads from any website",
     "permissions": [
         "scripting"
     ],
     "host_permissions": [
-        "*://www.youtube.com/*",
-        "*://youtube.com/*",
-        "*://m.youtube.com/*"
+        "<all_urls>"
     ],
     "content_scripts": [
         {
             "matches": [
-                "*://www.youtube.com/*",
-                "*://youtube.com/*",
-                "*://m.youtube.com/*"
+                "<all_urls>"
             ],
             "js": [
                 "content.js"
+            ],
+            "css": [
+                "content.css"
             ],
             "run_at": "document_start"
         }
