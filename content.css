@@ -1,13 +1,5 @@
-/* Hide YouTube ads */
+/* Hide YouTube ads - CSS backup */
 ytd-ad-slot-renderer {
-    display: none !important;
-}
-
-yt-formatted-string[role="doc-subtitle"] {
-    display: none !important;
-}
-
-ytd-rich-item-renderer[aria-label*="Promoted"] {
     display: none !important;
 }
 
@@ -15,19 +7,6 @@ ytd-promoted-sparkles-web-renderer {
     display: none !important;
 }
 
-.yt-simple-endpoint[href*="ads"] {
-    display: none !important;
-}
-
-[role="complementary"] [aria-label*="Ad"] {
-    display: none !important;
-}
-
 [data-ad-promo-id] {
-    display: none !important;
-}
-
-/* Hide ad banners */
-.ytd-banner-promo-renderer {
     display: none !important;
 }
